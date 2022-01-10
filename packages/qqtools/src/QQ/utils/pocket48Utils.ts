@@ -37,27 +37,28 @@ export function getRoomMessage({
 }: RoomMessageArgs): Array<MessageChain> {
   const sendGroup: Array<MessageChain> = [];                 // 发送的数据
   const nickName: string = customInfo?.user?.nickName ?? ''; // 用户名
-  const msgTime: string = dayjs(data.time).format('YYYY-MM-DD HH:mm:ss'); // 发送时间
+  const msgTime: string = dayjs(data.time).locale('en').format('DD/MMM HH:mm:ss'); // 发送时间
 
   // 输出房间信息
   const memberInfoContent: string = pocket48MemberInfo && memberInfo
-    ? `\n房间：${ memberInfo.ownerName } 的口袋房间` : '';
+    ? `${ memberInfo.ownerName }的房间` : '';
 
   try {
     // 普通信息
     if (customInfo.messageType === 'TEXT') {
       sendGroup.push(
-        plain(`${ nickName }：${ customInfo.text }
-时间：${ msgTime }${ memberInfoContent }`)
+        plain(`[${ nickName }]：${ customInfo.text }
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
     // 回复信息
     if (customInfo.messageType === 'REPLY' || customInfo.messageType === 'GIFTREPLY') {
       sendGroup.push(
-        plain(`${ customInfo.replyName }：${ customInfo.replyText }
-${ nickName }：${ customInfo.text }
-时间：${ msgTime }${ memberInfoContent }`)
+        plain(`【回复】
+${ customInfo.replyName }：${ customInfo.replyText }
+${ nickName }回 ${ customInfo.text }
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -66,7 +67,7 @@ ${ nickName }：${ customInfo.text }
       sendGroup.push(
         plain(`${ nickName } 发送了一张图片：`),
         image(data.file.url),
-        plain(`时间：${ msgTime }${ memberInfoContent }`)
+        plain(`${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -74,7 +75,7 @@ ${ nickName }：${ customInfo.text }
     if (customInfo.messageType === 'AUDIO') {
       sendGroup.push(
         plain(`${ nickName } 发送了一条语音：${ data.file.url }
-时间：${ msgTime }${ memberInfoContent }`)
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -82,7 +83,7 @@ ${ nickName }：${ customInfo.text }
     if (customInfo.messageType === 'VIDEO') {
       sendGroup.push(
         plain(`${ nickName } 发送了一个视频：${ data.file.url }
-时间：${ msgTime }${ memberInfoContent }`)
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -95,17 +96,17 @@ ${ nickName }：${ customInfo.text }
       sendGroup.push(
         plain(`${ nickName } 正在直播
 直播标题：${ customInfo.liveTitle }
-时间：${ msgTime }${ memberInfoContent }`)
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
     // 鸡腿翻牌
     if (customInfo.messageType === 'FLIPCARD') {
       sendGroup.push(
-        plain(`${ nickName } 翻牌了问题：
-${ customInfo.question }
-回答：${ customInfo.answer }
-时间：${ msgTime }${ memberInfoContent }`)
+        plain(`【翻牌】${ nickName } 
+问：${ customInfo.question }
+答：${ customInfo.answer }
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -114,10 +115,10 @@ ${ customInfo.question }
       const answer: { url: string } = JSON.parse(customInfo.answer);
 
       sendGroup.push(
-        plain(`${ nickName } 翻牌了问题：
-${ customInfo.question }
-回答：https://mp4.48.cn${ answer.url }
-时间：${ msgTime }${ memberInfoContent }`)
+        plain(`【翻牌】${ nickName } 
+问：${ customInfo.question }
+答：https://mp4.48.cn${ answer.url }
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -126,7 +127,7 @@ ${ customInfo.question }
       sendGroup.push(
         plain(`${ nickName } ：`),
         image(customInfo.emotionRemote),
-        plain(`时间：${ msgTime }${ memberInfoContent }`)
+        plain(`${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -137,7 +138,7 @@ ${ customInfo.question }
         sendGroup.push(
           plain(`${ nickName }：投出了${ customInfo.giftInfo.giftNum }票。`),
           image(`https://source.48.cn${ customInfo.giftInfo.picPath }`),
-          plain(`时间：${ msgTime }${ memberInfoContent }`)
+          plain(`${ msgTime }${ memberInfoContent }`)
         );
       }
     } else
@@ -145,10 +146,10 @@ ${ customInfo.question }
     // 房间发起投票
     if (customInfo.messageType === 'VOTE') {
       sendGroup.push(
-        plain(`${ nickName }：发起投票
+        plain(`【投票】${ nickName }
 标题：${ customInfo.text }
 正文：${ customInfo.content }
-时间：${ msgTime }${ memberInfoContent }`)
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -156,7 +157,7 @@ ${ customInfo.question }
     if (customInfo.messageType === 'CLOSE_ROOM_CHAT') {
       sendGroup.push(
         plain(`${ nickName } 房间被关闭了。
-时间：${ msgTime }${ memberInfoContent }`)
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -164,7 +165,7 @@ ${ customInfo.question }
     if (customInfo.messageType === 'EXPRESS') {
       sendGroup.push(
         plain(`${ nickName }：发送了一个表情。
-时间：${ msgTime }${ memberInfoContent }`)
+${ msgTime }${ memberInfoContent }`)
       );
     } else
 
@@ -229,10 +230,10 @@ export function getLogMessage({ customInfo, data, event, memberInfo }: {
 }): string | undefined {
   let logData: string | undefined; // 日志信息
   const nickName: string = customInfo?.user?.nickName ?? ''; // 用户名
-  const msgTime: string = dayjs(data.time).format('YYYY-MM-DD HH:mm:ss'); // 发送时间
+  const msgTime: string = dayjs(data.time).locale('en').format('DD/MMM HH:mm:ss'); // 发送时间
 
   // 输出房间信息
-  const memberInfoContent: string = memberInfo ? `\n房间：${ memberInfo.ownerName } 的口袋房间` : '';
+  const memberInfoContent: string = memberInfo ? `\n ${ memberInfo.ownerName } 的房间` : '';
 
   try {
     // 普通信息
@@ -366,7 +367,7 @@ ${ JSON.stringify(event) }
  * @param { string } logData: 日志内容
  */
 export async function log(dir: string, logData: string): Promise<void> {
-  const logDay: string = dayjs().format('YYYY-MM-DD');
+  const logDay: string = dayjs().locale('en').format('DD/MMM');
 
   await fse.outputFile(`${ dir }/${ logDay }.log`, `${ logData }\n\n`, {
     encoding: 'utf8',
