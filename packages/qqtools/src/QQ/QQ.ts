@@ -334,7 +334,7 @@ class QQ extends Basic {
         nowMembers.push(member.ownerName);
       }
 
-      let text: string = `${ dayjs().format('YYYY-MM-DD HH:mm:ss') }在 ${ name } 的房间：\n`;
+      let text: string = `${ dayjs().locale('en').format('DD/MMM HH:mm:ss') }在 ${ name } 的房间：\n`;
 
       if (nowMembers?.length) {
         text += `${ nowMembers.join('\n') }`;
@@ -379,7 +379,7 @@ class QQ extends Basic {
         const idx1: number = this.membersCache.findIndex((o: MemberInfo): boolean => o.account === xoxMember.account);
 
         if (idx1 < 0) {
-          entryLog.push(`${ xoxMember.ownerName } 进入了 ${ name } 的房间`);
+          entryLog.push(`${ xoxMember.ownerName } 进入了 ${ name } 的房间✔️`);
         }
       }
 
@@ -389,7 +389,7 @@ class QQ extends Basic {
           const idx: number = nowMembers.findIndex((o: MemberInfo): boolean => o.account === member.account);
 
           if (idx < 0) {
-            outputLog.push(`${ member.ownerName } 离开了 ${ name } 的房间`);
+            outputLog.push(`${ member.ownerName } 离开了 ${ name } 的房间❌`);
           }
         }
       }
@@ -399,7 +399,7 @@ class QQ extends Basic {
       const allLogs: Array<string> = entryLog.concat(outputLog);
 
       if (allLogs?.length) {
-        const logText: string = `${ dayjs().format('YYYY-MM-DD HH:mm:ss') }\n${ allLogs.join('\n') }`;
+        const logText: string = `${ dayjs().locale('en').format('DD/MMM HH:mm:ss') }\n${ allLogs.join('\n') }`;
 
         await this.sendMessage([plain(logText)]);
 
@@ -424,13 +424,13 @@ class QQ extends Basic {
 
       if (this.ownerOnlineCache === false && online === true) {
         // 上线
-        await this.sendMessage([plain(`${ name } 进入自己的房间。
-时间：${ dayjs().format('YYYY-MM-DD HH:mm:ss') }`)]);
+        await this.sendMessage([plain(`${ name } 进入房间⚡。
+${ dayjs().locale('en').format('DD/MMM HH:mm:ss') }`)]);
       }
 
       if (this.ownerOnlineCache === true && online === false) {
-        await this.sendMessage([plain(`${ name } 离开自己的房间。
-时间：${ dayjs().format('YYYY-MM-DD HH:mm:ss') }`)]);
+        await this.sendMessage([plain(`${ name } 离开房间🚀。
+${ dayjs().locale('en').format('DD/MMM HH:mm:ss') }`)]);
       }
 
       this.ownerOnlineCache = online;
@@ -515,7 +515,7 @@ class QQ extends Basic {
       await this.initBilibiliWorker();
       await this.initTaoba();
       this.initCronJob();
-      this.startTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
+      this.startTime = dayjs().locale('en').format('DD/MMM HH:mm:ss');
 
       return true;
     } catch (err) {
